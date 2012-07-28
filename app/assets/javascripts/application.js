@@ -12,4 +12,8 @@
 //
 //= require jquery
 //= require jquery_ujs
-//= require_tree .
+//= require angular
+//= require bootstrap
+//= require ang-models
+//= require mynotes
+//= require_self
