@@ -1,0 +1,30 @@
+!!! 5
+%html
+  %head
+    %title Mynotes
+    = stylesheet_link_tag    "application", :media => "all"
+    = javascript_include_tag "application"
+    = csrf_meta_tags
+  %body
+    #app-container
+      #app-header.navbar.navbar-fixed-top
+        .navbar-inner
+          .container
+            %img#header-logo{:src => "http://www.personal.com/cms/images/gemware-logo.png"}
+            %a.btn.btn-primary.pull-right Login
+      .container-fluid
+        .row-fluid
+          #app-sidebar.span3
+            %ul.nav.nav-list
+              %li.nav-header Notes
+              %li
+                %a{:href => "#"} 
+                  %i.icon-file
+                  Note1
+              %li.divider
+              %li 
+                %a{:href => "#"}
+                  %i.icon-plus-sign
+                  Add New Note...
+          #app-body.span9
+            = yield

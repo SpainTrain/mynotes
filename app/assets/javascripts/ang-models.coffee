@@ -1,0 +1,2 @@
+@NotesCtrl = ($scope) ->
+  $scope.notes = []

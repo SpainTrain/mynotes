@@ -1,0 +1,30 @@
+#app-container
+{
+  position: absolute;
+  top: 0px;
+  bottom: 0px;
+  right: 0px;
+  left: 0px;
+}
+
+#app-header
+{
+}
+
+#header-logo
+{
+  height: 40px;
+}
+
+#app-sidebar
+{
+  background-color: #ddd;
+  overflow-y: auto;
+  border-radius: 4px;
+}
+
+#app-body
+{
+  background-color: #ddd;
+  border-radius: 4px;
+}
