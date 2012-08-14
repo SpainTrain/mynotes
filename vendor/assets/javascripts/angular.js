@@ -1,1 +1,1 @@
-/home/spainhower/projects/angular.js/src/Angular.js
+/home/spainhower/projects/angular.js/build/angular.js

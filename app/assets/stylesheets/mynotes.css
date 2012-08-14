@@ -1,3 +1,8 @@
+input[type="text"]
+{
+  width: 97%;
+}
+
 #app-container
 {
   position: absolute;
@@ -5,10 +10,15 @@
   bottom: 0px;
   right: 0px;
   left: 0px;
+  padding-top: 60px;
 }
 
-#app-header
+@media (max-width: 979px) 
 {
+  #app-container
+  {
+    padding-top: 0px;
+  }
 }
 
 #header-logo
@@ -19,12 +29,28 @@
 #app-sidebar
 {
   background-color: #ddd;
+  overflow-x: hidden;
   overflow-y: auto;
   border-radius: 4px;
+  padding-top: 10px;
+}
+
+#search-input
+{
+  width: 90%;
 }
 
 #app-body
 {
   background-color: #ddd;
   border-radius: 4px;
+  padding: 10px;
+}
+
+
+.note-body
+{
+  overflow-y: auto;
+  overflow-x: hidden;
+  word-wrap: break-word;
 }

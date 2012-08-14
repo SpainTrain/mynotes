@@ -1,0 +1,18 @@
+-# N0TE SHOW VIEW
+.navbar
+  .navbar-inner
+    .container
+      %a.brand(href="") #{@note[:title]}
+      = link_to '<i class="icon-trash" ></i> Delete'.html_safe, 
+              note_path(@note_id), 
+              :method => "delete", 
+              :class => "btn btn-danger pull-right", 
+              :confirm => "Are you sure you wish to delete '#{@note[:title]}'"
+      = link_to('<i class="icon-pencil"></i> Edit'.html_safe, 
+              edit_note_path(@note_id), 
+              :class => 'btn btn-info pull-right')
+      %ul.nav.pull-right
+        %li.divider-vertical
+  -#%small.pull-right.alert.alert-info Last Saved: #{@note[:last_saved]}
+.note-body.well
+  -#YUI maybe

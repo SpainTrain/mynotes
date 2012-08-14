@@ -1,0 +1,13 @@
+-# N0TE EDIT VIEW
+.page-header(ng-controller="NoteCtrl")
+  %h1 {{note.title}}
+.btn-toolbar
+  .btn-group
+    %a.btn.btn-success(href="#")
+      %i.icon-ok
+      Save
+    %a.btn.btn-danger(href="#")
+      %i.icon-trash
+      Delete
+.note-body
+  -#YUI

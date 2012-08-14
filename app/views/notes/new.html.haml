@@ -1,1 +1,5 @@
-#hello I'm a body content!
+-# N0TE NEW VIEW
+= form_tag({:controller => "notes", :action => "create"}, :method => "post") do
+  = label_tag(:new_note_title, "Title")
+  = text_field_tag(:new_note_title)
+  = submit_tag("Create")

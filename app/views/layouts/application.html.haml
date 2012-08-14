@@ -1,9 +1,8 @@
 !!! 5
-%html
+%html(ng-app)
   %head
     %title Mynotes
     = stylesheet_link_tag    "application", :media => "all"
-    = javascript_include_tag "application"
     = csrf_meta_tags
   %body
     #app-container
@@ -14,17 +13,29 @@
             %a.btn.btn-primary.pull-right Login
       .container-fluid
         .row-fluid
-          #app-sidebar.span3
-            %ul.nav.nav-list
-              %li.nav-header Notes
-              %li
-                %a{:href => "#"} 
-                  %i.icon-file
-                  Note1
-              %li.divider
-              %li 
-                %a{:href => "#"}
-                  %i.icon-plus-sign
-                  Add New Note...
+          #app-sidebar.span3(ng-controller="NotesCtrl")
+            .row-fluid
+              .span2
+                %i.icon-search.pull-right
+              .span10
+                %input#search-input.input-medium(type="text" ng-model="search" placeholder="Search")
+            .rowfluid
+              .span12
+                %ul.nav.nav-list
+                  %li.nav-header 
+                    Notes ({{note_count}})
+                    %a.pull-right(href="" ng-click="refreshNotes()" ng-disabled="refreshing")
+                      %i.icon-refresh
+                  %li(ng-repeat="note in notes | filter:search | orderBy:'last_saved'")
+                    %a{:href => "#{notes_path}/{{note.id}}"} 
+                      %i.icon-file
+                      {{note.title}}
+                  %li.divider
+                  %li 
+                    %a{:href => "#{new_note_path}"}
+                      %i.icon-plus-sign
+                      Add New Note...
           #app-body.span9
             = yield
+      
+    = javascript_include_tag "application"
