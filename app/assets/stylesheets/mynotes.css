@@ -47,6 +47,10 @@ input[type="text"]
   padding: 10px;
 }
 
+#edit-ctrl
+{
+  height: 100%;
+}
 
 .note-body
 {

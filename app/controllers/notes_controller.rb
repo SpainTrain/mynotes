@@ -69,7 +69,13 @@ class NotesController < ApplicationController
   #Display html for editing note
 	def edit
 		#params[:id]
-		respond_to do |format|
+    id = params[:id]
+    
+    #Controller vars
+    @note_id = id;
+    @note = session[:notes][id]
+		
+    respond_to do |format|
 			format.html	# edit.html.haml
 		end
 	end
@@ -78,12 +84,14 @@ class NotesController < ApplicationController
 	def update
 		#params[:id]
     id = params[:id]
+
+    logger.debug "Update Ctrl Params: #{params.inspect}"
 		
     #copy updated info into session[:notes][params[:id]]
     note = session[:notes][id]
-    note[:title] = params[:note_title] || note[:title]
+    note[:title] = params[:note][:title] || note[:title]
     note[:body] = params[:note_body] || note[:body]
-    note[:url] = note_path(id)
+    note[:url] = note_url(id)
     #note[:last_saved] = Time.now
     #note[:last_saved] = (Time.now.to_f * 1000).to_i
 
@@ -92,7 +100,7 @@ class NotesController < ApplicationController
 
     #render
 		respond_to do |format|
-			format.json { render :json => notes }
+			format.json { render :json => note }
       format.html { redirect_to note_path(id) }
 		end
 	end

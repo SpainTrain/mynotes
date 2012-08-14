@@ -1,13 +1,41 @@
 -# N0TE EDIT VIEW
-.page-header(ng-controller="NoteCtrl")
-  %h1 {{note.title}}
-.btn-toolbar
-  .btn-group
-    %a.btn.btn-success(href="#")
-      %i.icon-ok
-      Save
-    %a.btn.btn-danger(href="#")
-      %i.icon-trash
-      Delete
-.note-body
-  -#YUI
+#edit-ctrl(ng-controller="EditNote")
+  #note-info
+    = hidden_field_tag(:note_title, @note[:title])
+    = hidden_field_tag(:note_body, @note[:body])
+    = hidden_field_tag(:note_url, note_url(@note_id))
+    = hidden_field_tag(:note_last_saved, @note[:last_saved])
+  .navbar
+    .navbar-inner
+      .container
+        %a.brand(href="#change-title" data-toggle="modal" ng-bind="note.title")
+        = link_to '<i class="icon-trash" ></i> Delete'.html_safe, 
+                note_path(@note_id), 
+                :method => "delete", 
+                :class => "btn btn-danger pull-right", 
+                :confirm => "Are you sure you wish to delete '#{@note[:title]}'"
+        %a.btn.btn-warning.pull-right(ng-click="reset()" ng-disabled="isClean()") 
+          %i.icon-arrow-left
+          Revert
+        %ul.nav.pull-right
+          %li.divider-vertical
+        %a.btn.btn-primary.pull-right
+          %i.icon-ok
+          Done
+        %a.btn.btn-success.pull-right(ng-disabled="isClean()")
+          %i.icon-download-alt
+          Save
+        %ul.nav.pull-right
+          %li.divider-vertical
+    -#%small.pull-right.alert.alert-info Last Saved: #{@note[:last_saved]}
+  .note-body.well
+    -#YUI
+  
+  #change-title.modal.hide.fade
+    .modal-header
+      %h3 Rename Note
+    .modal-body
+      %input{ :type => "text", "ng-model" => "note.title"}
+    .modal-footer
+      .btn(data-dismiss="modal" ng-click="reset('title')") Close
+      .btn.btn-primary(data-dismiss="modal" ng-click="update()") Rename
