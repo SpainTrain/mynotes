@@ -15,5 +15,6 @@
 //= require angular
 //= require bootstrap
 //= require ang-models
+//= require yui-editor-base
 //= require mynotes
 //= require_self

@@ -43,12 +43,13 @@
       $scope.note[opt_prop_name] = self.original[opt_prop_name]
     else
       $scope.note = angular.copy self.original
+    $scope.update()
     return @
 
   $scope.update = () ->
     promise = $http.put $scope.note.url, $scope.note
     promise.success (data, status, headers, config) ->
-      console.log data, status, headers, config
+      $scope.note = data
     return @
 
   return @

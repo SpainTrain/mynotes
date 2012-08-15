@@ -85,14 +85,12 @@ class NotesController < ApplicationController
 		#params[:id]
     id = params[:id]
 
-    logger.debug "Update Ctrl Params: #{params.inspect}"
-		
     #copy updated info into session[:notes][params[:id]]
     note = session[:notes][id]
     note[:title] = params[:note][:title] || note[:title]
-    note[:body] = params[:note_body] || note[:body]
+    note[:body] = params[:note][:body] || note[:body]
     note[:url] = note_url(id)
-    #note[:last_saved] = Time.now
+    note[:last_saved] = Time.now
     #note[:last_saved] = (Time.now.to_f * 1000).to_i
 
     #TODO if params[:hard_save] and logged in
