@@ -21,6 +21,7 @@
                 %input#search-input.input-medium(type="text" ng-model="search" placeholder="Search")
             .rowfluid
               .span12
+                %input#index-url(type="hidden" value="#{notes_url}")
                 %ul.nav.nav-list
                   %li.nav-header 
                     Notes ({{note_count}})

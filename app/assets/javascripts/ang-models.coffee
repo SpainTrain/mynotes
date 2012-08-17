@@ -1,15 +1,16 @@
 @NotesCtrl = ($scope, $http) ->
   $scope.refreshNotes = ->
     $scope.refreshing = true
-    $http.get('/notes').success (data) ->
+    $http.get($scope.index_url).success (data) ->
       $scope.note_count = 0
-      $scope.notes = data
+      $scope.notes = data != "null" ? data : {}
       for own key, val of $scope.notes
         val['id'] = key
         $scope.note_count++
       $scope.refreshing = false
       return @
     return @
+  $scope.index_url = $("#index-url").val()
   $scope.refreshing = false
   $scope.refreshNotes()
   return @
