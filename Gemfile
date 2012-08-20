@@ -36,8 +36,10 @@ gem 'jquery-rails'
 # gem 'capistrano'
 
 # To use debugger
-# gem 'ruby-debug'
+ gem 'ruby-debug'
 
 gem 'haml'
 
 gem 'thin'
+
+#gem 'closure-sprockets', :git=>'git://github.com/igrigorik/closure-sprockets.git'

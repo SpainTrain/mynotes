@@ -34,4 +34,7 @@ Mynotes::Application.configure do
 
   # Expands the lines which load the assets
   config.assets.debug = true
+
+  #Closure Compiler location for closure-sprockets
+  #config.closure.lib = "vendor/assets/closure-library"
 end
