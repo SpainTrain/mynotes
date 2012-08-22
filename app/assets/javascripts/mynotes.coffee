@@ -69,8 +69,28 @@ init_editor = () ->
   ]
 
   #manually wire up toolbar (using bootstrap rather than closure css)
+  $("#tb-undo").click (event) ->
+    note_editor.execCommand goog.editor.Command.UNDO
+    note_editor.focus()
+    return false
+
+  $("#tb-redo").click (event) ->
+    note_editor.execCommand goog.editor.Command.REDO
+    note_editor.focus()
+    return false
+
   $("#tb-bold").click (event) ->
     note_editor.execCommand goog.editor.Command.BOLD
+    note_editor.focus()
+    return false
+
+  $("#tb-italic").click (event) ->
+    note_editor.execCommand goog.editor.Command.ITALIC
+    note_editor.focus()
+    return false
+
+  $("#tb-link").click (event) ->
+    note_editor.execCommand goog.editor.Command.LINK
     return false
 
   #Listen for toolbar-related events
