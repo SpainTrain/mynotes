@@ -1,1 +1,0 @@
-goog.require(editor);
