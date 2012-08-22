@@ -47,14 +47,26 @@ input[type="text"]
   padding: 10px;
 }
 
-#edit-ctrl
+#note-toolbar
+{
+  margin: 0px;
+  border-bottom: 1px solid #888;
+  padding: 3px 3px 0;
+}
+
+#note-editor
+{
+  width: 99%;
+  border-radius: 4px;
+}
+
+.content-wrapper
 {
   height: 100%;
 }
 
 .note-body
 {
-  overflow-y: auto;
-  overflow-x: hidden;
-  word-wrap: break-word;
+  background-color: #fff;
+  border-radius: 4px;
 }

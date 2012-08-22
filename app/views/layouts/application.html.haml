@@ -20,14 +20,15 @@
               .span10
                 %input#search-input.input-medium(type="text" ng-model="search" placeholder="Search")
             .row-fluid
+              %input#index-url(type="hidden" value="#{notes_url}")
               .span12
                 %ul.nav.nav-list
-                  %li.nav-header 
+                  %li.nav-header.ng-cloak 
                     Notes ({{note_count}})
                     %a.pull-right(href="" ng-click="refreshNotes()" ng-disabled="refreshing")
                       %i.icon-refresh
                   %li(ng-repeat="note in notes | filter:search | orderBy:'last_saved'")
-                    %a{:href => "#{notes_path}/{{note.id}}"} 
+                    %a.ng-cloak{:href => "#{notes_path}/{{note.id}}"} 
                       %i.icon-file
                       {{note.title}}
                   %li.divider
@@ -38,4 +39,5 @@
           #app-body.span9
             = yield
       
+    %script(type="text/javascript" src="/closure/goog/base.js")
     = javascript_include_tag "application"

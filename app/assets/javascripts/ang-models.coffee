@@ -3,7 +3,7 @@
     $scope.refreshing = true
     $http.get($scope.index_url).success (data) ->
       $scope.note_count = 0
-      $scope.notes = data != "null" ? data : {}
+      $scope.notes = if data is "null" then {} else data
       for own key, val of $scope.notes
         val['id'] = key
         $scope.note_count++

@@ -1,5 +1,5 @@
 -# N0TE EDIT VIEW
-#edit-ctrl(ng-controller="EditNote")
+#edit-ctrl.content-wrapper(ng-controller="EditNote")
   #note-info
     = hidden_field_tag(:note_title, @note[:title])
     = hidden_field_tag(:note_body, @note[:body])
@@ -28,8 +28,22 @@
         %ul.nav.pull-right
           %li.divider-vertical
     -#%small.pull-right.alert.alert-info Last Saved: #{@note[:last_saved]}
-  .note-body.well
-    -#YUI
+  .note-body
+    #note-toolbar.btn-toolbar
+      .btn-group
+        %a#tb-undo.btn.btn-small(href="" rel="tooltip" title="Undo")
+          %i.icon-chevron-left
+        %a#tb-redo.btn.btn-small(href="" rel="tooltip" title="Redo")
+          %i.icon-chevron-right
+      .btn-group
+        %a#tb-bold.btn.btn-small(href="" rel="tooltip" title="Bold" tabindex="-1")
+          %i.icon-bold
+        %a#tb-italic.btn.btn-small(href="" rel="tooltip" title="Italic")
+          %i.icon-italic
+      .btn-group
+        %a#tb-link.btn.btn-small(href="" rel="tooltip" title="Add Link")
+          %i.icon-globe
+    #note-editor
   
   #change-title.modal.hide.fade
     .modal-header
