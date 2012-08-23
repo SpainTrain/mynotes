@@ -113,9 +113,10 @@ init_editor = () ->
 
   #watch for changes to content
   goog.events.listen note_editor, goog.editor.Field.EventType.DELAYEDCHANGE, () ->
-    console.log note_editor.getCleanContents()
+    $("#new_note_body").val(note_editor.getCleanContents()).change()
     return @
   
+  note_editor.setHtml true, $("#note_body").val()
   note_editor.makeEditable()
   return @
 

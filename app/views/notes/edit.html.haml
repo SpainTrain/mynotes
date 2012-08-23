@@ -5,6 +5,8 @@
     = hidden_field_tag(:note_body, @note[:body])
     = hidden_field_tag(:note_url, note_url(@note_id))
     = hidden_field_tag(:note_last_saved, @note[:last_saved])
+    = hidden_field_tag(:new_note_title, @note[:title])
+    %input#new_note_body{ :type => "hidden", "ng-model" => "note.title"}
   .navbar
     .navbar-inner
       .container
@@ -22,12 +24,11 @@
         %a.btn.btn-primary.pull-right
           %i.icon-ok
           Done
-        %a.btn.btn-success.pull-right(ng-disabled="isClean()")
+        %a.btn.btn-success.pull-right(ng-disabled="isClean()" ng-click="update()")
           %i.icon-download-alt
           Save
         %ul.nav.pull-right
           %li.divider-vertical
-    -#%small.pull-right.alert.alert-info Last Saved: #{@note[:last_saved]}
   .note-body
     #note-toolbar.btn-toolbar
       .btn-group
@@ -43,6 +44,7 @@
       .btn-group
         %a#tb-link.btn.btn-small(href="#insert-link-dialog" data-toggle="modal" rel="tooltip" title="Add Link")
           %i.icon-globe
+      %small.pull-right.muted Last Saved: {{note.last_saved}}
     #note-editor
   
   #change-title.modal.hide.fade
@@ -52,7 +54,7 @@
       %input{ :type => "text", "ng-model" => "note.title"}
     .modal-footer
       .btn(data-dismiss="modal" ng-click="reset('title')") Close
-      .btn.btn-primary(data-dismiss="modal" ng-click="update()") Rename
+      .btn.btn-primary(data-dismiss="modal") Rename
 
   #insert-link-dialog.modal.hide.fade
     .modal-header
