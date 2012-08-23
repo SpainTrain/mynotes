@@ -1,11 +1,8 @@
 class NotesController < ApplicationController
 
-	#def initialize
-#		if not session[:notes]
-#			session[:notes] = {}
-#		end
-#	end
-	
+  before_filter :check_session, :except =>[:new]
+  before_filter :check_token
+
 	#Get list of all notes
 	def index
 	  #TODO if logged in
@@ -26,7 +23,7 @@ class NotesController < ApplicationController
 	def create
 		#add new note to session
 		_new_id = (0...31).map{ "%01x" % rand(2**4) }.join
-		(session[:notes] ||= {})[_new_id] = {
+		session[:notes][_new_id] = {
       :title => params[:new_note_title], 
       :body => "", 
       :url => note_path(_new_id),
@@ -52,7 +49,7 @@ class NotesController < ApplicationController
       #pull from PAPI, place into session
 
     #Check for uninitialized notes hash or no item found
-    if not defined? session[:notes] or not defined? session[:notes][id] then
+    if not defined? session[:notes][id] then
       redirect_to new_note_path, :notice => "We don't appear to know a note by that name here."
     end
 
@@ -113,7 +110,7 @@ class NotesController < ApplicationController
     notice = "You cannot kill that which doesn not live (i.e., note not found)"
 
 		#remove from session[:notes]
-    if defined? session[:notes] and defined? session[:notes][id] then
+    if defined? session[:notes][id] then
       deleted_item = session[:notes][id]
       session[:notes].delete(id)
       notice = "Note '#{deleted_item[:title]}' successfully deleted"
@@ -128,4 +125,18 @@ class NotesController < ApplicationController
       format.html { redirect_to new_note_path, :notice => notice }
 		end
 	end
+
+  protected
+    def check_session
+      if not defined? session[:notes]
+        session[:notes] = {}
+      end
+    end
+
+    def check_token
+      if defined? params[:code]
+        debugger
+        session[:code] = params[:code]
+      end
+    end
 end
