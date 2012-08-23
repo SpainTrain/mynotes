@@ -1,5 +1,4 @@
 class NotesController < ApplicationController
-
   before_filter :check_session, :except =>[:new]
   before_filter :check_token
 
@@ -135,8 +134,8 @@ class NotesController < ApplicationController
 
     def check_token
       if defined? params[:code]
-        debugger
         session[:code] = params[:code]
+        session[:oauth_sess] = OauthSession.new params[:code]
       end
     end
 end
