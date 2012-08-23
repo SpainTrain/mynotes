@@ -36,12 +36,12 @@
         %a#tb-redo.btn.btn-small(href="" rel="tooltip" title="Redo")
           %i.icon-chevron-right
       .btn-group
-        %a#tb-bold.btn.btn-small(href="" rel="tooltip" title="Bold" tabindex="-1")
+        %a#tb-bold.btn.btn-small(href="" rel="tooltip" title="Bold")
           %i.icon-bold
         %a#tb-italic.btn.btn-small(href="" rel="tooltip" title="Italic")
           %i.icon-italic
       .btn-group
-        %a#tb-link.btn.btn-small(href="" rel="tooltip" title="Add Link")
+        %a#tb-link.btn.btn-small(href="#insert-link-dialog" data-toggle="modal" rel="tooltip" title="Add Link")
           %i.icon-globe
     #note-editor
   
@@ -53,3 +53,15 @@
     .modal-footer
       .btn(data-dismiss="modal" ng-click="reset('title')") Close
       .btn.btn-primary(data-dismiss="modal" ng-click="update()") Rename
+
+  #insert-link-dialog.modal.hide.fade
+    .modal-header
+      %h3 Insert Link
+    .modal-body
+      %label(for="il-title") Text to display
+      %input#il-title(type="text" placeholder="Title")
+      %label(for="il-url") Link to
+      %input#il-url(type="text" placeholder="URL")
+    .modal-footer
+      .btn(data-dismiss="modal") Close
+      #il-submit.btn.btn-primary(data-dismiss="modal") Insert Link

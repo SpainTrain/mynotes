@@ -89,9 +89,17 @@ init_editor = () ->
     note_editor.focus()
     return false
 
-  $("#tb-link").click (event) ->
-    note_editor.execCommand goog.editor.Command.LINK
-    return false
+  $("#il-submit").click (event) ->
+    title = $("#il-title").val()
+    url = $("#il-url").val()
+    url = if url.slice 0, 7 == "http://" then url else "http://#{url}"
+    content = note_editor.getInjectableContents "<a href=\"#{ url }\">#{ title }</a>"
+    note_editor.focus()
+    $(note_editor.getElement()).append content
+    note_editor.focus()
+    $("#il-title").val("")
+    $("#il-url").val("")
+    return true
 
   #Listen for toolbar-related events
   ### not currently working
