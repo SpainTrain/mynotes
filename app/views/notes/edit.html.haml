@@ -21,7 +21,7 @@
           Revert
         %ul.nav.pull-right
           %li.divider-vertical
-        %a.btn.btn-primary.pull-right
+        %a.btn.btn-primary.pull-right{ :href => note_url(@note_id)}
           %i.icon-ok
           Done
         %a.btn.btn-success.pull-right(ng-disabled="isClean()" ng-click="update()")
