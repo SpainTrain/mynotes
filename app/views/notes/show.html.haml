@@ -15,5 +15,6 @@
         %ul.nav.pull-right
           %li.divider-vertical
     -#%small.pull-right.alert.alert-info Last Saved: #{@note[:last_saved]}
-  .note-body
-    -#YUI maybe
+  #show-body.note-body
+    %input#note_body{:type => 'hidden', :value => @note[:body]}
+    -#content

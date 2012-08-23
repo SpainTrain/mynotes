@@ -14,6 +14,21 @@ goog.require 'goog.editor.plugins.UndoRedo'
 goog.require 'goog.ui.editor.DefaultToolbar'
 goog.require 'goog.ui.editor.ToolbarController'
 
+#regex and fn for cleaning html before placing in browser
+#currently only use a, b, and p elements
+end_tag_regex = /<\/([^abp])/gim
+sta_tag_regex = /<([^\/abp])/gim
+
+if end_tag_regex.compile?
+  end_tag_regex.compile(end_tag_regex)
+  sta_tag_regex.compile(sta_tag_regex)
+
+clean_html = (html) ->
+  ret = html?.replace end_tag_regex, "&lt;$1" #must be first
+  ret = ret?.replace sta_tag_regex, "&lt;/$1"
+  return ret || ""
+
+#Want a full screen app, so resize certain elements
 handler_resize = (event) ->
   padding_top = parseInt($("#app-container").css("padding-top").slice(0,-2))
   body_height = $('#app-container').height() - $('#app-header').outerHeight() - (45 - padding_top)
@@ -42,31 +57,6 @@ init_editor = () ->
   note_editor.registerPlugin new goog.editor.plugins.LoremIpsum('Click here to edit')
   note_editor.registerPlugin new goog.editor.plugins.LinkDialogPlugin()
   note_editor.registerPlugin new goog.editor.plugins.LinkBubble()
-
-  #toolbar stuff
-  buttons = [
-    goog.editor.Command.BOLD,
-    goog.editor.Command.ITALIC,
-    goog.editor.Command.UNDERLINE,
-    goog.editor.Command.FONT_COLOR,
-    goog.editor.Command.BACKGROUND_COLOR,
-    goog.editor.Command.FONT_FACE,
-    goog.editor.Command.FONT_SIZE,
-    goog.editor.Command.LINK,
-    goog.editor.Command.UNDO,
-    goog.editor.Command.REDO,
-    goog.editor.Command.UNORDERED_LIST,
-    goog.editor.Command.ORDERED_LIST,
-    goog.editor.Command.INDENT,
-    goog.editor.Command.OUTDENT,
-    goog.editor.Command.JUSTIFY_LEFT,
-    goog.editor.Command.JUSTIFY_CENTER,
-    goog.editor.Command.JUSTIFY_RIGHT,
-    goog.editor.Command.SUBSCRIPT,
-    goog.editor.Command.SUPERSCRIPT,
-    goog.editor.Command.STRIKE_THROUGH,
-    goog.editor.Command.REMOVE_FORMAT
-  ]
 
   #manually wire up toolbar (using bootstrap rather than closure css)
   $("#tb-undo").click (event) ->
@@ -116,7 +106,7 @@ init_editor = () ->
     $("#new_note_body").val(note_editor.getCleanContents()).change()
     return @
   
-  note_editor.setHtml true, $("#note_body").val()
+  note_editor.setHtml false, clean_html($("#note_body").val())
   note_editor.makeEditable()
   return @
 
@@ -125,5 +115,6 @@ $(window).resize handler_resize
 $(document).ready (event) ->
   handler_resize event
   init_editor()
+  $("#show-body").html clean_html($("#note_body").val())
   console.log "Everything loaded", event
   return @
