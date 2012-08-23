@@ -1,4 +1,5 @@
 class NotesController < ApplicationController
+  before_filter :check_logout, :only => [:new]
   before_filter :check_session, :except =>[:new]
   before_filter :check_token
 
@@ -126,6 +127,14 @@ class NotesController < ApplicationController
 	end
 
   protected
+    def check_logout
+      debugger
+      if params[:logout] == 1
+        session.delete('notes')
+        session.delete('oauth_sess')
+      end
+    end
+
     def check_session
       if not defined? session[:notes]
         session[:notes] = {}
@@ -133,9 +142,13 @@ class NotesController < ApplicationController
     end
 
     def check_token
-      if defined? params[:code]
+      if params[:code]
         session[:code] = params[:code]
-        session[:oauth_sess] = OauthSession.new params[:code]
+        session[:oauth_sess] = OauthSession.new params[:code], "#{request.protocol}#{request.host_with_port}#{request.fullpath}"
+      end
+      if session.has_key?:oauth_sess
+        debugger
+        @logged_in = true
       end
     end
 end

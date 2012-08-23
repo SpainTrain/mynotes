@@ -10,8 +10,12 @@
         .navbar-inner
           .container
             %img#header-logo{:src => "http://www.personal.com/cms/images/gemware-logo.png"}
-            %a.btn.btn-primary.pull-right{:href => oauth_url }
-              Login
+            - if @logged_in
+              %a.btn.pull-right{:href => "#{new_note_path}?logout=1"}
+                Log Out
+            -else
+              %a.btn.btn-primary.pull-right{:href => oauth_url }
+                Login
       .container-fluid
         .row-fluid
           #app-sidebar.span3(ng-controller="NotesCtrl")

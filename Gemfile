@@ -42,4 +42,8 @@ gem 'haml'
 
 gem 'thin'
 
+gem 'rest-client'
+
+gem 'faraday'
+
 #gem 'closure-sprockets', :git=>'git://github.com/igrigorik/closure-sprockets.git'
