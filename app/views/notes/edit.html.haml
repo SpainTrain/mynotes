@@ -44,7 +44,9 @@
       .btn-group
         %a#tb-link.btn.btn-small(href="#insert-link-dialog" data-toggle="modal" rel="tooltip" title="Add Link")
           %i.icon-globe
-      %small.pull-right.muted Last Saved: {{note.last_saved}}
+      %small.pull-right.muted 
+        %span Last Saved: 
+        %span(ng-bind="note.last_saved")
     #note-editor
   
   #change-title.modal.hide.fade

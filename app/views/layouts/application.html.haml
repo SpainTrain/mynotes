@@ -59,7 +59,7 @@
                   %li(ng-repeat="note in notes | filter:search | orderBy:predicate" ng-class="note.state")
                     %a.ng-cloak{:href => "{{note.href}}", :title => "Last Saved: {{note.last_saved}}"} 
                       %i.icon-file
-                      {{note.title}}
+                      %span(ng-bind="note.title")
                   %li.divider
                   %li 
                     %a{:href => "#{new_note_path}"}
