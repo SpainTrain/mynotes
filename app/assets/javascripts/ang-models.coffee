@@ -1,22 +1,34 @@
 @NotesCtrl = ($scope, $http) ->
+  #init scope vars
+  $scope.index_url = $("#index-url").val()
+  $scope.refreshing = false
+  
+  #get id from the url IF it exists
+  url_id = location.pathname.match(/[a-fA-F0-9]{31}/)?[0]
+
+  #function to refresh the list via index action
   $scope.refreshNotes = ->
     $scope.refreshing = true
     $http.get($scope.index_url).success (data) ->
-      $scope.note_count = 0
-      $scope.notes = if data is "null" then {} else data
-      for own key, val of $scope.notes
+      if data is "null" then return
+      $scope.notes = []
+      for own key, val of data
         val['id'] = key
-        $scope.note_count++
+        val['state'] = if key == url_id then 'active' else ''
+        val['href'] = if key == url_id then '#' else "#{$scope.index_url}/#{key}"
+        $scope.notes.push val
       $scope.refreshing = false
       return @
     return @
-  $scope.index_url = $("#index-url").val()
-  $scope.refreshing = false
+
   $scope.refreshNotes()
   return @
 
 @EditNote = ($scope, $http) ->
   self = @
+
+  #init icons to dark
+  $scope.clean_class = ''
 
   #Init the model from hidden inputs
   $scope.note =
@@ -37,7 +49,9 @@
     if opt_prop_name?
       return angular.equals $scope.note[opt_prop_name], self.original[opt_prop_name]
     else
-      return angular.equals $scope.note, self.original
+      is_clean = angular.equals $scope.note, self.original
+      $scope.clean_class = if not is_clean then '' else 'icon-white'
+      return is_clean
 
   $scope.reset = (opt_prop_name) ->
     if opt_prop_name?
@@ -60,5 +74,7 @@
     $scope.note.body = jQuery(this).val()
     $scope.$digest()
     return @
+
+
 
   return @

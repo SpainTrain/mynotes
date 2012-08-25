@@ -11,21 +11,21 @@
     .navbar-inner
       .container
         %a.brand(href="#change-title" data-toggle="modal" ng-bind="note.title")
-        = link_to '<i class="icon-trash" ></i> Delete'.html_safe, 
+        = link_to '<i class="icon-trash icon-white-" ></i> Delete'.html_safe, 
                 note_path(@note_id), 
                 :method => "delete", 
                 :class => "btn btn-danger pull-right", 
                 :confirm => "Are you sure you wish to delete '#{@note[:title]}'"
         %a.btn.btn-warning.pull-right(ng-click="reset()" ng-disabled="isClean()") 
-          %i.icon-arrow-left
+          %i.icon-arrow-left(ng-class="clean_class")
           Revert
         %ul.nav.pull-right
           %li.divider-vertical
         %a.btn.btn-primary.pull-right{ :href => note_url(@note_id)}
-          %i.icon-ok
+          %i.icon-ok.icon-white-
           Done
         %a.btn.btn-success.pull-right(ng-disabled="isClean()" ng-click="update()")
-          %i.icon-download-alt
+          %i.icon-download-alt(ng-class="clean_class")
           Save
         %ul.nav.pull-right
           %li.divider-vertical

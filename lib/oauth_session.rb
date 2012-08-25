@@ -32,6 +32,5 @@ class OauthSession
     res_hash = JSON.parse response.body
     @access_token = res_hash["access_token"]
     @refresh_token = res_hash["refresh_token"]
-    debugger
   end
 end

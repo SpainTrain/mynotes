@@ -128,7 +128,6 @@ class NotesController < ApplicationController
 
   protected
     def check_logout
-      debugger
       if params[:logout] == 1
         session.delete('notes')
         session.delete('oauth_sess')
@@ -147,7 +146,6 @@ class NotesController < ApplicationController
         session[:oauth_sess] = OauthSession.new params[:code], "#{request.protocol}#{request.host_with_port}#{request.fullpath}"
       end
       if session.has_key?:oauth_sess
-        debugger
         @logged_in = true
       end
     end

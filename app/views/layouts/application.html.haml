@@ -25,15 +25,19 @@
               .span10
                 %input#search-input.input-medium(type="text" ng-model="search" placeholder="Search")
             .row-fluid
+              .span1
+              .span5
+                .span.muted Notes ({{notes.length}})
+              .span5
+                %button.btn.btn-mini.btn-info.pull-right(href="#" ng-click="refreshNotes()" ng-disabled="refreshing")
+                  %i.icon-refresh.icon-white
+              .span1
+            .row-fluid
               %input#index-url(type="hidden" value="#{notes_url}")
               .span12
                 %ul.nav.nav-list
-                  %li.nav-header.ng-cloak 
-                    Notes ({{note_count}})
-                    %a.pull-right(href="" ng-click="refreshNotes()" ng-disabled="refreshing")
-                      %i.icon-refresh
-                  %li(ng-repeat="note in notes | filter:search | orderBy:'last_saved'")
-                    %a.ng-cloak{:href => "#{notes_path}/{{note.id}}"} 
+                  %li(ng-repeat="note in notes | filter:search | orderBy:'-last_saved'" ng-class="note.state")
+                    %a.ng-cloak{:href => "{{note.href}}", :title => "Last Saved: {{note.last_saved}}"} 
                       %i.icon-file
                       {{note.title}}
                   %li.divider
