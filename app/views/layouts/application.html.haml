@@ -24,19 +24,39 @@
                 %i.icon-search.pull-right
               .span10
                 %input#search-input.input-medium(type="text" ng-model="search" placeholder="Search")
-            .row-fluid
-              .span1
-              .span5
-                .span.muted Notes ({{notes.length}})
-              .span5
-                %button.btn.btn-mini.btn-info.pull-right(href="#" ng-click="refreshNotes()" ng-disabled="refreshing")
+            .btn-toolbar
+              .btn-group
+                %span &nbsp;&nbsp;
+                %span.muted Notes (
+                %span.muted(ng-bind="notes.length")
+                %span.muted )
+              .btn-group.pull-right
+                %span &nbsp;&nbsp;
+              .btn-group.pull-right
+                %button.btn.btn-mini.btn-info(href="#" ng-click="refreshNotes()" ng-disabled="refreshing")
                   %i.icon-refresh.icon-white
-              .span1
+              .btn-group.pull-right
+                %a.btn.btn-mini.dropdown-toggle(data-toggle="dropdown" href="#")
+                  Sort
+                  %span.caret
+                %ul.dropdown-menu
+                  %a(href="#" ng-click="predicate = 'title'") 
+                    Title (A-Z)
+                    %i.icon-arrow-up
+                  %a(href="#" ng-click="predicate = '-title'") 
+                    Title (Z-A)
+                    %i.icon-arrow-down
+                  %a(href="#" ng-click="predicate = '-last_saved'") 
+                    Date (Newest First)
+                    %i.icon-arrow-up
+                  %a(href="#" ng-click="predicate = 'last_saved'") 
+                    Date (Oldest First)
+                    %i.icon-arrow-down
             .row-fluid
               %input#index-url(type="hidden" value="#{notes_url}")
               .span12
                 %ul.nav.nav-list
-                  %li(ng-repeat="note in notes | filter:search | orderBy:'-last_saved'" ng-class="note.state")
+                  %li(ng-repeat="note in notes | filter:search | orderBy:predicate" ng-class="note.state")
                     %a.ng-cloak{:href => "{{note.href}}", :title => "Last Saved: {{note.last_saved}}"} 
                       %i.icon-file
                       {{note.title}}
