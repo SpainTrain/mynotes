@@ -10,8 +10,8 @@
   $scope.refreshNotes = ->
     $scope.refreshing = true
     $http.get($scope.index_url).success (data) ->
-      if data is "null" then return
       $scope.notes = []
+      if data is "null" then return @
       for own key, val of data
         val['id'] = key
         val['state'] = if key == url_id then 'active' else ''
