@@ -23,6 +23,7 @@ class NotesController < ApplicationController
 	def create
 		#add new note to session
 		_new_id = (0...31).map{ "%01x" % rand(2**4) }.join
+    debugger
 		session[:notes][_new_id] = {
       :title => params[:new_note_title], 
       :body => "", 
@@ -135,17 +136,17 @@ class NotesController < ApplicationController
     end
 
     def check_session
-      if not defined? session[:notes]
+      if not session.key?:notes
         session[:notes] = {}
       end
     end
 
     def check_token
-      if params[:code]
+      if params.key?:code
         session[:code] = params[:code]
         session[:oauth_sess] = OauthSession.new params[:code], "#{request.protocol}#{request.host_with_port}#{request.fullpath}"
       end
-      if session.has_key?:oauth_sess
+      if session.key?:oauth_sess
         @logged_in = true
       end
     end
