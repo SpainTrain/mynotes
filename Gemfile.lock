@@ -1,6 +1,7 @@
 GEM
   remote: https://rubygems.org/
   specs:
+    SystemTimer (1.2.3)
     actionmailer (3.2.6)
       actionpack (= 3.2.6)
       mail (~> 2.4.4)
@@ -124,6 +125,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  SystemTimer
   coffee-rails (~> 3.2.1)
   faraday
   haml

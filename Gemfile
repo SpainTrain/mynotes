@@ -44,6 +44,8 @@ gem 'thin'
 
 gem 'rest-client'
 
+gem 'SystemTimer'
+
 gem 'faraday'
 
 #gem 'closure-sprockets', :git=>'git://github.com/igrigorik/closure-sprockets.git'
