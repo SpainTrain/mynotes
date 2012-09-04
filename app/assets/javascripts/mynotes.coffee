@@ -24,9 +24,9 @@ if end_tag_regex.compile?
   sta_tag_regex.compile(sta_tag_regex)
 
 clean_html = (html) ->
-  ret = html?.replace end_tag_regex, "&lt;$1" #must be first
-  ret = ret?.replace sta_tag_regex, "&lt;/$1"
-  return ret || ""
+  #ret = html?.replace end_tag_regex, "&lt;$1" #must be first
+  #ret = ret?.replace sta_tag_regex, "&lt;/$1"
+  return html || ""
 
 #Want a full screen app, so resize certain elements
 handler_resize = (event) ->
@@ -89,6 +89,7 @@ init_editor = () ->
     note_editor.focus()
     $("#il-title").val("")
     $("#il-url").val("")
+    $("#new_note_body").val(note_editor.getCleanContents()).change()
     return true
 
   #Listen for toolbar-related events

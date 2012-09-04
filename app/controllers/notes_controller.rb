@@ -23,7 +23,6 @@ class NotesController < ApplicationController
 	def create
 		#add new note to session
 		_new_id = (0...31).map{ "%01x" % rand(2**4) }.join
-    debugger
 		session[:notes][_new_id] = {
       :title => params[:new_note_title], 
       :body => "", 

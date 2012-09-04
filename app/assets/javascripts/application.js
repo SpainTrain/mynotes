@@ -15,6 +15,8 @@
 //= require jquery_ujs
 //= require angular
 //= require bootstrap
+//= require markdown_converter
+//= require html2md
 //= require ang-models
 //= require mynotes
 //= require_self
