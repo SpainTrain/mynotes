@@ -14,20 +14,6 @@ goog.require 'goog.editor.plugins.UndoRedo'
 goog.require 'goog.ui.editor.DefaultToolbar'
 goog.require 'goog.ui.editor.ToolbarController'
 
-#regex and fn for cleaning html before placing in browser
-#currently only use a, b, and p elements
-end_tag_regex = /<\/([^abp])/gim
-sta_tag_regex = /<([^\/abp])/gim
-
-if end_tag_regex.compile?
-  end_tag_regex.compile(end_tag_regex)
-  sta_tag_regex.compile(sta_tag_regex)
-
-clean_html = (html) ->
-  #ret = html?.replace end_tag_regex, "&lt;$1" #must be first
-  #ret = ret?.replace sta_tag_regex, "&lt;/$1"
-  return html || ""
-
 #Want a full screen app, so resize certain elements
 handler_resize = (event) ->
   padding_top = parseInt($("#app-container").css("padding-top").slice(0,-2))
@@ -89,7 +75,7 @@ init_editor = () ->
     note_editor.focus()
     $("#il-title").val("")
     $("#il-url").val("")
-    $("#new_note_body").val(note_editor.getCleanContents()).change()
+    $("#new_note_body").val(MyNotes.HtmlToMd(note_editor.getCleanContents())).change()
     return true
 
   #Listen for toolbar-related events
@@ -104,10 +90,10 @@ init_editor = () ->
 
   #watch for changes to content
   goog.events.listen note_editor, goog.editor.Field.EventType.DELAYEDCHANGE, () ->
-    $("#new_note_body").val(note_editor.getCleanContents()).change()
+    $("#new_note_body").val(MyNotes.HtmlToMd(note_editor.getCleanContents())).change()
     return @
   
-  note_editor.setHtml false, clean_html($("#note_body").val())
+  note_editor.setHtml false, MyNotes.MdToHtml($("#note_body").val())
   note_editor.makeEditable()
   return @
 
@@ -116,6 +102,7 @@ $(window).resize handler_resize
 $(document).ready (event) ->
   handler_resize event
   init_editor()
-  $("#show-body").html clean_html($("#note_body").val())
+  if (md_str = $("#note_body").val())?
+    $("#show-body").html MyNotes.MdToHtml(md_str)
   console.log "Everything loaded", event
   return @

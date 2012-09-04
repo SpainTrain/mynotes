@@ -70,7 +70,7 @@
     return @
 
   #hack because ng-model doesn't seem to work on hidden inputs
-  jQuery("#new_note_body").change () ->
+  jQuery("#new_note_body").change (event) ->
     $scope.note.body = jQuery(this).val()
     $scope.$digest()
     return @

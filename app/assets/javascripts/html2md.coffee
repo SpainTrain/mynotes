@@ -72,8 +72,14 @@ make_replacements = (str, replacements) ->
 
 #fn to convert html to our dialect of markdown
 @MyNotes.HtmlToMd = (html_string) ->
-  return make_replacements html_string, htmltomd_replacements
+  if html_string?
+    return make_replacements html_string, htmltomd_replacements
+  else
+    return ""
 
 #Function to convert our dialect of markdown to html
 @MyNotes.MdToHtml = (md_string) ->
-  return make_replacements md_string, mdtohtml_replacements
+  if md_string?
+    return make_replacements md_string, mdtohtml_replacements
+  else
+    return ""
