@@ -16,12 +16,6 @@ class OauthSession
     }
     headers = {:content_type => "application/x-www-form-urlencoded;charset=UTF-8"}
 
-    data_str = "grant_type=#{oauth_info[:grant_type]}"
-    data_str << "&\ncode=#{@code}"
-    data_str << "&\nclient_id=#{oauth_info[:client_id]}"
-    data_str << "&\nclient_secret=#{oauth_info[:client_secret]}"
-    data_str << "&\nredirect_uri=#{callback}"
-    
     conn = Faraday.new(:url => url, :ssl => ssl) do |faraday|
       faraday.request :url_encoded
       faraday.adapter Faraday.default_adapter
@@ -32,5 +26,10 @@ class OauthSession
     res_hash = JSON.parse response.body
     @access_token = res_hash["access_token"]
     @refresh_token = res_hash["refresh_token"]
+  end
+
+
+  def gem_list filters
+    
   end
 end
