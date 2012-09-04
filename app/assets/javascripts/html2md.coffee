@@ -32,9 +32,11 @@ htmltomd_replacements = [
   str: "\n$1"
 ]
 
+#map for mynotes markdown to html
 #Markdown libraries don't handle situations like <b>txt</b><b><i>txt</i></b><i>txt</i> correctly
-#map for mynotes markdown to markdown
-mnmdtomd_replacements = [
+#Also, markdown itself does not support arbitrary numbers of new lines
+#ORDER MATTERS, do not change the order
+mdtohtml_replacements = [
   regex: /\n\n/igm
   str: "<div><br/></div>"
 ,
@@ -57,26 +59,6 @@ mnmdtomd_replacements = [
   str: "$1"
 ]
 
-#map for MdHtmlToMnHtml fn
-mdhtmltomnhtml_replacements = [
-  regex: /(<\/?)strong(>)/ig
-  str: "$1b$2"
-,
-  regex: /(<\/?)em(>)/ig
-  str: "$1i$2"
-,
-  regex: /(<\/?)p(>)/ig
-  str: "$1div$2"
-,
-  regex: /^\n/igm
-  str: "<div><br></div>"
-,
-  regex: /\n/igm
-  str: "<br/>"
-]
-
-converter = new Markdown.Converter()
-
 #private fn to do the replacement work
 make_replacements = (str, replacements) ->
   ret_str = str
@@ -88,14 +70,10 @@ make_replacements = (str, replacements) ->
 #public functions
 @MyNotes = {}
 
-#fn to convert mynotes' html to markdown
+#fn to convert html to our dialect of markdown
 @MyNotes.HtmlToMd = (html_string) ->
   return make_replacements html_string, htmltomd_replacements
 
-#Function to convert markdown's html to mynote's html
-#In particular, emph and strong need to be italic and bold
+#Function to convert our dialect of markdown to html
 @MyNotes.MdToHtml = (md_string) ->
-  ret_str = make_replacements md_string, mnmdtomd_replacements
-#  ret_str = converter.makeHtml ret_str
-#  ret_str = make_replacements ret_str, mdhtmltomnhtml_replacements
-  return ret_str
+  return make_replacements md_string, mdtohtml_replacements
