@@ -121,6 +121,7 @@ class OauthSession
     gems = response["gems"]
 
     to_return = {}
+    if gems == nil then return to_return end
     gems.delete_if { |gem| gem["gem_template_id"] != template_id }
     gems.each { |gem| to_return[gem["gem_instance_id"].split("#")[2]] = {
       :title => gem["gem_instance_name"],
