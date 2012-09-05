@@ -52,7 +52,7 @@ class OauthSession
     end
 
     #check for new local data that needs to be saved
-    curr_gems.reject{|id, gem| gem.key?:gem_instance_id}.each do |id, gem|
+    curr_gems.reject{|id, gem| gem != nil and gem.key?:gem_instance_id}.each do |id, gem|
       #save gem to server and update local note_id
       new_gem = create_gem curr_gems.delete(id)
       new_id = new_gem[:gem_instance_id].split('#')[2]

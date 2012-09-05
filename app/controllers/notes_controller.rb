@@ -11,6 +11,7 @@ class NotesController < ApplicationController
 
     respond_to do |format|
       format.json { render :json => session[:notes] }
+      format.html { redirect_to new_note_path }
 		end
 	end
 
@@ -28,24 +29,26 @@ class NotesController < ApplicationController
     _note_hash = {
         :title => params[:new_note_title], 
         :body => "", 
-        :url => note_path(_new_id),
         :last_saved => Time.now
       }
 
     if @logged_in
       _new_note = session[:oauth_sess].create_gem _note_hash
       _new_id = _new_note[:gem_instance_id].split('#')[2]
+      _new_note[:url] = note_url(_new_id),
       session[:notes][_new_id] = _new_note
+      redirect_to view_context.oauth_url
     else
 		  _new_id = (0...32).map{ "%01x" % rand(2**4) }.join
 		  _new_id.insert(-25, '-').insert(-21, '-').insert(-17, '-').insert(-13,'-')
+      _new_note[:url] = note_url(_new_id),
       session[:notes][_new_id] = _note_hash
-    end
 
-		respond_to do |format|
-			format.json { render :json => :session['notes'][_new_id] }
-			format.html { redirect_to edit_note_path(_new_id) }
-		end
+		  respond_to do |format|
+			  format.json { render :json => :session['notes'][_new_id] }
+			  format.html { redirect_to edit_note_path(_new_id) }
+		  end
+    end
 	end
 	
   #Display html with existing note
@@ -54,7 +57,7 @@ class NotesController < ApplicationController
     id = params[:id]
     
     if @logged_in
-      #need to handle edge case of being redirected here from login
+      #need to handle edge case of being redirected here from login w/ unprimed session
       #(in other cases a merge would have already happened)
     end
 
@@ -79,7 +82,7 @@ class NotesController < ApplicationController
     id = params[:id]
     
     if @logged_in
-      #need to handle edge case of being redirected here from login
+      #need to handle edge case of being redirected here from login with unprimed session
       #(in other cases a merge would have already happened)
     end
 
