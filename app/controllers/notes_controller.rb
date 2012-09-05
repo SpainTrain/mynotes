@@ -37,7 +37,7 @@ class NotesController < ApplicationController
       _new_id = _new_note[:gem_instance_id].split('#')[2]
       _new_note[:url] = note_url(_new_id),
       session[:notes][_new_id] = _new_note
-      redirect_to view_context.oauth_url
+      redirect_to view_context.oauth_url edit_note_url(_new_id)
     else
 		  _new_id = (0...32).map{ "%01x" % rand(2**4) }.join
 		  _new_id.insert(-25, '-').insert(-21, '-').insert(-17, '-').insert(-13,'-')
