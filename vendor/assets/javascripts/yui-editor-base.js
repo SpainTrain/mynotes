@@ -1,1 +1,0 @@
-/home/spainhower/js_libs/yui/build/editor-base/editor-base.js
