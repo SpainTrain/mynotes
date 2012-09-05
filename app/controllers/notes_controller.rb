@@ -5,9 +5,11 @@ class NotesController < ApplicationController
 
 	#Get list of all notes
 	def index
-	  #TODO if logged in
-      #get from PAPI, place into session
-		respond_to do |format|
+    if @logged_in
+      session[:oauth_sess].merge_gems session[:notes], session[:oauth_sess].gem_list
+    end
+
+    respond_to do |format|
       format.json { render :json => session[:notes] }
 		end
 	end
@@ -22,17 +24,23 @@ class NotesController < ApplicationController
 	#create a new note
 	def create
 		#add new note to session
-		_new_id = (0...31).map{ "%01x" % rand(2**4) }.join
-		session[:notes][_new_id] = {
-      :title => params[:new_note_title], 
-      :body => "", 
-      :url => note_path(_new_id),
-      :last_saved => Time.now
-      #:last_saved => (Time.now.to_f * 1000).to_i
-    }
+    _new_id = ""
+    _note_hash = {
+        :title => params[:new_note_title], 
+        :body => "", 
+        :url => note_path(_new_id),
+        :last_saved => Time.now
+      }
 
-		#TODO if logged in
-			#create it via API
+    if @logged_in
+      _new_note = session[:oauth_sess].create_gem _note_hash
+      _new_id = _new_note[:gem_instance_id].split('#')[2]
+      session[:notes][_new_id] = _new_note
+    else
+		  _new_id = (0...32).map{ "%01x" % rand(2**4) }.join
+		  _new_id.insert(-25, '-').insert(-21, '-').insert(-17, '-').insert(-13,'-')
+      session[:notes][_new_id] = _note_hash
+    end
 
 		respond_to do |format|
 			format.json { render :json => :session['notes'][_new_id] }
@@ -45,11 +53,13 @@ class NotesController < ApplicationController
 		#params[:id]
     id = params[:id]
     
-    #TODO if logged in
-      #pull from PAPI, place into session
+    if @logged_in
+      #need to handle edge case of being redirected here from login
+      #(in other cases a merge would have already happened)
+    end
 
     #Check for uninitialized notes hash or no item found
-    if not defined? session[:notes][id] then
+    if not session[:notes].key?id then
       redirect_to new_note_path, :notice => "We don't appear to know a note by that name here."
     end
 
@@ -68,6 +78,11 @@ class NotesController < ApplicationController
 		#params[:id]
     id = params[:id]
     
+    if @logged_in
+      #need to handle edge case of being redirected here from login
+      #(in other cases a merge would have already happened)
+    end
+
     #Controller vars
     @note_id = id;
     @note = session[:notes][id]
@@ -88,10 +103,10 @@ class NotesController < ApplicationController
     note[:body] = params[:note][:body] || note[:body]
     note[:url] = note_url(id)
     note[:last_saved] = Time.now
-    #note[:last_saved] = (Time.now.to_f * 1000).to_i
 
-    #TODO if params[:hard_save] and logged in
-      #Update via PAPI
+    if @logged_in
+      note = session[:oauth_sess].update_gem note
+    end
 
     #render
 		respond_to do |format|
@@ -116,8 +131,9 @@ class NotesController < ApplicationController
       notice = "Note '#{deleted_item[:title]}' successfully deleted"
     end
 
-    #TODO if signed in
-      #remove using PAPI
+    if @logged_in and deleted_item.key?:gem_instance_id
+      session[:oauth_sess].destroy_gem deleted_item[:gem_instance_id]
+    end
 
 		#render
     respond_to do |format|
@@ -128,8 +144,9 @@ class NotesController < ApplicationController
 
   protected
     def check_logout
-      if params[:logout] == 1
+      if params.key?:logout
         session.delete('notes')
+        session.delete('code')
         session.delete('oauth_sess')
       end
     end
@@ -141,7 +158,7 @@ class NotesController < ApplicationController
     end
 
     def check_token
-      if params.key?:code
+      if params.key?:code and params[:code] != session[:code]
         session[:code] = params[:code]
         session[:oauth_sess] = OauthSession.new params[:code], "#{request.protocol}#{request.host_with_port}#{request.fullpath}"
       end
