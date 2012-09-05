@@ -28,7 +28,8 @@
               .btn-group
                 %span &nbsp;&nbsp;
                 %span.muted Notes (
-                %span.muted(ng-bind="notes.length")
+                %span.muted(ng-bind="notes.length" ng-hide="refreshing")
+                = image_tag "throbber.gif", :size => "24x24", :class => "ng-show: refreshing;"
                 %span.muted )
               .btn-group.pull-right
                 %span &nbsp;&nbsp;
@@ -54,7 +55,7 @@
                     %i.icon-arrow-down
             .row-fluid
               %input#index-url(type="hidden" value="#{notes_url}")
-              .span12
+              .span12(ng-hide="refreshing")
                 %ul.nav.nav-list
                   %li(ng-repeat="note in notes | filter:search | orderBy:predicate" ng-class="note.state")
                     %a.ng-cloak{:href => "{{note.href}}", :title => "Last Saved: {{note.last_saved}}"} 
