@@ -27,10 +27,10 @@ class NotesController < ApplicationController
 		#add new note to session
     _new_id = ""
     _note_hash = {
-        :title => params[:new_note_title], 
-        :body => "", 
-        :last_saved => Time.now
-      }
+      :title => params[:new_note_title], 
+      :body => "", 
+      :last_saved => Time.now
+    }
 
     if @logged_in
       _new_note = session[:oauth_sess].create_gem _note_hash
@@ -41,7 +41,7 @@ class NotesController < ApplicationController
     else
 		  _new_id = (0...32).map{ "%01x" % rand(2**4) }.join
 		  _new_id.insert(-25, '-').insert(-21, '-').insert(-17, '-').insert(-13,'-')
-      _new_note[:url] = note_url(_new_id),
+      _note_hash[:url] = note_url(_new_id)
       session[:notes][_new_id] = _note_hash
 
 		  respond_to do |format|
