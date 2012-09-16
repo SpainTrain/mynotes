@@ -3,28 +3,16 @@ class OauthSession
   @@oauth_info = Rails.configuration.oauth_info
 
   def initialize code, callback
-    @code = code
-    url = "#{@@oauth_info[:oauth_url]}/access_token"
-    ssl = @@ssl
     data = {
       :grant_type => @@oauth_info[:grant_type],
-      :code => @code,
+      :code => code,
       :client_id => @@oauth_info[:client_id],
       :client_secret => @@oauth_info[:client_secret],
       :redirect_uri => callback
     }
-    headers = {:content_type => "application/x-www-form-urlencoded;charset=UTF-8"}
-
-    conn = Faraday.new(:url => url, :ssl => ssl) do |faraday|
-      faraday.request :url_encoded
-      faraday.adapter Faraday.default_adapter
-      faraday.response :logger
+    if not do_auth data
+      #Raise exception
     end
-
-    response = conn.post url, data, headers
-    res_hash = JSON.parse response.body
-    @access_token = res_hash["access_token"]
-    @refresh_token = res_hash["refresh_token"]
   end
 
   #destructive method that merges latter hash into the former hash
@@ -61,6 +49,7 @@ class OauthSession
   end
 
   def update_gem note_hash
+    check_validity
     req_hash = {
       "gem" => {
         "info" => {
@@ -81,6 +70,7 @@ class OauthSession
   end
 
   def create_gem note_hash
+    check_validity
     req_hash = {
       "gem" => {
         "info" => {
@@ -105,18 +95,21 @@ class OauthSession
   end
 
   def destroy_gem gem_instance_id
+    check_validity
     response = api_delete gem_instance_id
     return gem_to_note response["gem"]
   end
 
   #takes note gem id and returns mynotes formatted gem data
   def get_gem gem_instance_id
+    check_validity
     response = api_get gem_instance_id
     return gem_to_note response["gem"]
   end
 
   #takes optional template-id, returns hash of gem (in mynotes format)
   def gem_list template_id=@@oauth_info[:template_id]
+    check_validity
     response = api_get "my"
     gems = response["gems"]
 
@@ -132,6 +125,47 @@ class OauthSession
   end
 
   protected
+  #Check expiration and refresh self if invalid
+  def check_validity
+    if @expires_at < Time.new
+      debugger
+      do_refresh
+    end
+  end
+
+  #Perform either initial auth or refresh, return boolean for success
+  def do_auth data_hash
+    url = "#{@@oauth_info[:oauth_url]}/access_token"
+    ssl = @@ssl
+    headers = {:content_type => "application/x-www-form-urlencoded;charset=UTF-8"}
+
+    conn = Faraday.new(:url => url, :ssl => ssl) do |faraday|
+      faraday.request :url_encoded
+      faraday.adapter Faraday.default_adapter
+      faraday.response :logger
+    end
+
+    response = conn.post url, data_hash, headers
+    res_hash = JSON.parse response.body
+    @access_token = res_hash["access_token"]
+    @refresh_token = res_hash["refresh_token"]
+    @expires_at = res_hash["expires_in"].seconds.from_now
+    return true
+  end
+
+  #Refresh token
+  def do_refresh
+    data = {
+      :grant_type => "refresh_token",
+      :refresh_token => @refresh_token,
+      :client_id => @@oauth_info[:client_id],
+      :client_secret => @@oauth_info[:client_secret]
+    }
+    if not do_auth data
+      #Raise Exception
+    end
+  end
+
   #transform a gem hash into a mynotes hash
   def gem_to_note gem_hash
     if gem_hash == nil then return nil end
@@ -180,6 +214,7 @@ class OauthSession
     return JSON.parse(conn.delete(url, {}, headers).body)
   end
 
+  #get connection for get, put, post, delete (not authorization)
   def get_conn url
     return Faraday.new(:url => url, :ssl => @@ssl) do |faraday|
       faraday.adapter Faraday.default_adapter
