@@ -22,7 +22,8 @@
         return @
       .error (data, status, headers, config) ->
         $scope.notes = []
-        $scope.error = $scope.refreshing = false
+        $scope.error = true
+        $scope.refreshing = false
         console?.error data, status, config
     return @
 
