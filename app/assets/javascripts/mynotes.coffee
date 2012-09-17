@@ -75,7 +75,7 @@ init_editor = () ->
     note_editor.focus()
     $("#il-title").val("")
     $("#il-url").val("")
-    $("#new_note_body").val(MyNotes.HtmlToMd(note_editor.getCleanContents())).change()
+    $("#new_note_body").val(note_editor.getCleanContents()).change()
     return true
 
   #Listen for toolbar-related events
@@ -90,10 +90,10 @@ init_editor = () ->
 
   #watch for changes to content
   goog.events.listen note_editor, goog.editor.Field.EventType.DELAYEDCHANGE, () ->
-    $("#new_note_body").val(MyNotes.HtmlToMd(note_editor.getCleanContents())).change()
+    $("#new_note_body").val(note_editor.getCleanContents()).change()
     return @
   
-  note_editor.setHtml false, MyNotes.MdToHtml($("#note_body").val())
+  note_editor.setHtml false, $("#note_body").val()
   note_editor.makeEditable()
   return @
 
@@ -102,7 +102,7 @@ $(window).resize handler_resize
 $(document).ready (event) ->
   handler_resize event
   init_editor()
-  if (md_str = $("#note_body").val())?
-    $("#show-body").html MyNotes.MdToHtml(md_str)
+  if (html_str = $("#note_body").val())?
+    $("#show-body").html html_str
   console.log "Everything loaded", event
   return @

@@ -48,6 +48,7 @@ GEM
       multipart-post (~> 1.1)
     haml (3.1.6)
     hike (1.2.1)
+    hpricot (0.8.6)
     i18n (0.6.0)
     journey (1.0.4)
     jquery-rails (2.0.2)
@@ -90,8 +91,6 @@ GEM
     rbx-require-relative (0.0.9)
     rdoc (3.12)
       json (~> 1.4)
-    rest-client (1.6.7)
-      mime-types (>= 1.16)
     ruby-debug (0.10.4)
       columnize (>= 0.1)
       ruby-debug-base (~> 0.10.4.0)
@@ -129,10 +128,10 @@ DEPENDENCIES
   coffee-rails (~> 3.2.1)
   faraday
   haml
+  hpricot
   jquery-rails
   json
   rails (= 3.2.6)
-  rest-client
   ruby-debug
   sass-rails (~> 3.2.3)
   sqlite3

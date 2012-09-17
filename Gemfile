@@ -36,13 +36,15 @@ gem 'jquery-rails'
 # gem 'capistrano'
 
 # To use debugger
- gem 'ruby-debug'
+gem 'ruby-debug'
 
+#for haml and html2haml
 gem 'haml'
+gem 'hpricot'
 
 gem 'thin'
 
-gem 'rest-client'
+#gem 'rest-client'
 
 gem 'SystemTimer'
 

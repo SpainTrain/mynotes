@@ -1,3 +1,5 @@
+require 'haml/html'
+
 class NotesController < ApplicationController
   before_filter :check_logout, :only => [:new]
   before_filter :check_session, :except =>[:new]
@@ -67,8 +69,14 @@ class NotesController < ApplicationController
     end
 
     #populate controller vars
-    @note = session[:notes][id]
+    @note = session[:notes][id].dup
     @note_id = id
+    
+    #render note body from haml to html
+    if @note.key?:body
+      eng = Haml::Engine.new(@note[:body])
+      @note[:body] = eng.render
+    end
 
     #render
 		respond_to do |format|
@@ -86,9 +94,15 @@ class NotesController < ApplicationController
       #(in other cases a merge would have already happened)
     end
 
-    #Controller vars
-    @note_id = id;
-    @note = session[:notes][id]
+    #populate controller vars
+    @note = session[:notes][id].dup
+    @note_id = id
+    
+    #render note body from haml to html
+    if @note.key?:body
+      eng = Haml::Engine.new(@note[:body])
+      @note[:body] = eng.render
+    end
 		
     respond_to do |format|
 			format.html	# edit.html.haml
@@ -99,11 +113,19 @@ class NotesController < ApplicationController
 	def update
 		#params[:id]
     id = params[:id]
+    note = session[:notes][id]
+
+    #haml-fy body if provided
+    body_data = note[:body]
+    if params[:note].key?:body
+      doc = Hpricot(params[:note][:body])
+      eng = Haml::HTML.new(doc)
+      body_data = eng.render
+    end
 
     #copy updated info into session[:notes][params[:id]]
-    note = session[:notes][id]
     note[:title] = params[:note][:title] || note[:title]
-    note[:body] = params[:note][:body] || note[:body]
+    note[:body] = body_data
     note[:url] = note_url(id)
     note[:last_saved] = Time.now
 

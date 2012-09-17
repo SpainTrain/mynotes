@@ -184,7 +184,13 @@ class OauthSession
     headers = {:Authorization => "Bearer #{@access_token}"}
 
     conn = get_conn url
-    return JSON.parse(conn.get(url, data, headers).body)
+    res = conn.get(url, data, headers)
+    #TODO handle "developer over qps" by retrying after delay
+    if res.status == 200
+      return JSON.parse(res.body)
+    else
+      return nil
+    end
   end
 
   def api_put url_suffix, data_hash
