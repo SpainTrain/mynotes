@@ -9,16 +9,21 @@
   #function to refresh the list via index action
   $scope.refreshNotes = ->
     $scope.refreshing = true
-    $http.get($scope.index_url).success (data) ->
-      $scope.notes = []
-      if data is "null" then return @
-      for own key, val of data
-        val['id'] = key
-        val['state'] = if key == url_id then 'active' else ''
-        val['href'] = if key == url_id then '#' else "#{$scope.index_url}/#{key}"
-        $scope.notes.push val
-      $scope.refreshing = false
-      return @
+    $http.get($scope.index_url)
+      .success (data) ->
+        $scope.notes = []
+        if data is "null" then return @
+        for own key, val of data
+          val['id'] = key
+          val['state'] = if key == url_id then 'active' else ''
+          val['href'] = if key == url_id then '#' else "#{$scope.index_url}/#{key}"
+          $scope.notes.push val
+        $scope.error = $scope.refreshing = false
+        return @
+      .error (data, status, headers, config) ->
+        $scope.notes = []
+        $scope.error = $scope.refreshing = false
+        console?.error data, status, config
     return @
 
   $scope.refreshNotes()

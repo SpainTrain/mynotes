@@ -128,7 +128,6 @@ class OauthSession
   #Check expiration and refresh self if invalid
   def check_validity
     if @expires_at < Time.new
-      debugger
       do_refresh
     end
   end

@@ -53,6 +53,13 @@
                   %a(href="#" ng-click="predicate = 'last_saved'") 
                     Date (Oldest First)
                     %i.icon-arrow-down
+            .row-fluid.ng-cloak(ng-show="error")
+              .span12
+                .alert.alert-error(title="Please try refreshing or logging out/in.")
+                  .badge.badge-important
+                    %i.icon.icon-white.icon-exclamation-sign
+                    %span Error
+                  %div Whoops, something went wrong!
             .row-fluid
               %input#index-url(type="hidden" value="#{notes_url}")
               .span12(ng-hide="refreshing")
