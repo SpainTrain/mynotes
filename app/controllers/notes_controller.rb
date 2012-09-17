@@ -1,7 +1,7 @@
 require 'haml/html'
 
 class NotesController < ApplicationController
-  before_filter :check_logout, :only => [:new]
+  before_filter :check_logout
   before_filter :check_session, :except =>[:new]
   before_filter :check_token
 
@@ -169,7 +169,12 @@ class NotesController < ApplicationController
 
   protected
     def check_logout
-      if params.key?:logout
+      expired = false
+      if session.key?:expiration
+        expired = Time.now > session[:expiration]
+      end
+      
+      if params.key?:logout or expired
         session.delete('notes')
         session.delete('code')
         session.delete('oauth_sess')
@@ -189,6 +194,9 @@ class NotesController < ApplicationController
       end
       if session.key?:oauth_sess
         @logged_in = true
+        session[:expiration] = 1.day.from_now
+      else
+        session[:expiration] = 1.hour.from_now
       end
     end
 end
