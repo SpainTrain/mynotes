@@ -1,5 +1,6 @@
 module ApplicationHelper
   def oauth_url callback_uri="#{request.protocol}#{request.host_with_port}#{request.path}"
+    session[:redirect_uri] = callback_uri
     oauth_info = Rails.configuration.oauth_info
     url = "#{oauth_info[:oauth_url]}/authorize"
     url << "?client_id=#{oauth_info[:client_id]}"

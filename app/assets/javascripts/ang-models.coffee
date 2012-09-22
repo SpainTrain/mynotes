@@ -16,7 +16,8 @@
         for own key, val of data
           val['id'] = key
           val['state'] = if key == url_id then 'active' else ''
-          val['href'] = if key == url_id then '#' else "#{$scope.index_url}/#{key}"
+          #val['href'] = if key == url_id then '#' else "#{$scope.index_url}/#{key}"
+          val['href'] = val['url']
           $scope.notes.push val
         $scope.error = $scope.refreshing = false
         return @

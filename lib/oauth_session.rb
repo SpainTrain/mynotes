@@ -23,19 +23,8 @@ class OauthSession
 
     #check for new data from server
     new_gems.each do |id, gem| 
-      if curr_gems.key? id        
-        curr_gem = curr_gems[id]
-        if gem[:last_saved] > curr_gem[:last_saved]
-          curr_gems[id] = get_gem gem[:gem_instance_id]
-        elsif gem[:last_saved] < curr_gem[:last_saved]
-          #update gem to server
-          curr_gems[id] = update_gem curr_gem
-        else
-          #same data, do nothing
-        end
-      else
-        #get gem and place into curr_gems
-        curr_gems[id] = get_gem gem[:gem_instance_id]
+      if not curr_gems.key? id        
+        curr_gems[id] = gem
       end
     end
 
@@ -104,31 +93,41 @@ class OauthSession
   def get_gem gem_instance_id
     check_validity
     response = api_get gem_instance_id
-    return gem_to_note response["gem"]
+    if response != nil and response.key?"gem"
+      return gem_to_note response["gem"]
+    else
+      return nil
+    end
   end
 
   #takes optional template-id, returns hash of gem (in mynotes format)
   def gem_list template_id=@@oauth_info[:template_id]
     check_validity
+    to_return = {}
+
     response = api_get "my"
+    #TODO: implement proper expection raising on following line
+    if response == nil then return to_return end
     gems = response["gems"]
 
-    to_return = {}
     if gems == nil then return to_return end
     gems.delete_if { |gem| gem["gem_template_id"] != template_id }
-    gems.each { |gem| to_return[gem["gem_instance_id"].split("#")[2]] = {
+    gems.each { |gem| to_return[gem["gem_instance_id"]] = {
       :title => gem["gem_instance_name"],
       :gem_instance_id => gem["gem_instance_id"],
+      :remote_timestamp => gem["updated_timestamp"],
       :last_saved => Time.at(gem["updated_timestamp"].to_f/1000)
     }}
     return to_return
   end
 
   protected
-  #Check expiration and refresh self if invalid
+  #Check expiration and refresh self if invalid, return boolean of success
   def check_validity
-    if @expires_at < Time.new
+    if @expires_at != nil and @expires_at < Time.new
       do_refresh
+    else
+      false
     end
   end
 
@@ -145,14 +144,18 @@ class OauthSession
     end
 
     response = conn.post url, data_hash, headers
-    res_hash = JSON.parse response.body
-    @access_token = res_hash["access_token"]
-    @refresh_token = res_hash["refresh_token"]
-    @expires_at = res_hash["expires_in"].seconds.from_now
-    return true
+    if response.status == 200
+      res_hash = JSON.parse response.body
+      @access_token = res_hash["access_token"]
+      @refresh_token = res_hash["refresh_token"]
+      @expires_at = res_hash["expires_in"].seconds.from_now
+      return true
+    else
+      return false
+    end
   end
 
-  #Refresh token
+  #Refresh token, return success
   def do_refresh
     data = {
       :grant_type => "refresh_token",
@@ -162,6 +165,7 @@ class OauthSession
     }
     if not do_auth data
       #Raise Exception
+      false
     end
   end
 
@@ -171,6 +175,7 @@ class OauthSession
     return {
       :title  => gem_hash["data"]["note_title"],
       :body   => gem_hash["data"]["note_note"],
+      :url    => gem_hash["data"]["note_note_url"],
       :last_saved => Time.at(gem_hash["info"]["updated_timestamp"].to_f/1000),
       :remote_timestamp => gem_hash["info"]["updated_timestamp"],
       :gem_instance_id => gem_hash["info"]["gem_instance_id"]
