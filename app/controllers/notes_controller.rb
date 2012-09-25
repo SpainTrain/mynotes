@@ -17,6 +17,10 @@ class NotesController < ApplicationController
       end
     end
 
+  rescue => err
+    handle_err err
+  
+  ensure
     respond_to do |format|
       format.json { render :json => session[:notes] }
       format.html { redirect_to new_note_path }
@@ -50,28 +54,35 @@ class NotesController < ApplicationController
 		  _new_id.insert(-25, '-').insert(-21, '-').insert(-17, '-').insert(-13,'-')
       _note_hash[:url] = note_url(_new_id)
       session[:notes][_new_id] = _note_hash
-
-		  respond_to do |format|
-			  format.json { render :json => session[:notes][_new_id] }
-			  format.html { redirect_to edit_note_path(_new_id) }
-		  end
     end
+
+  rescue => err
+    handle_err err
+  
+  ensure
+	  respond_to do |format|
+		  format.json { render :json => session[:notes][_new_id] }
+		  format.html { redirect_to edit_note_path(_new_id) }
+	  end
 	end
 
   #Display html with existing note
 	def show
 		#params[:id]
     id = params[:id]
-    
+    redirected = false
+
     #Check for uninitialized notes hash or no item found
     if not session[:notes].key?id then
       redirect_to new_note_path, :notice => "We don't appear to know a note by that name here."
+      redirected = true
       return
     end
 
     #Check for an unmerged note
     if @logged_in and not session[:notes][id].key?:gem_instance_id
       redirect_to note_path swap_gem id
+      redirected = true
       return
     end
 
@@ -90,21 +101,29 @@ class NotesController < ApplicationController
       @note[:body] = eng.render
     end
 
+  rescue => err
+    handle_err err
+  
+  ensure
     #render
-		respond_to do |format|
-			format.html	# show.html.haml
-      format.json { render :json => @note }
-		end
+    if not redirected
+  		respond_to do |format|
+	  		format.html	# show.html.haml
+        format.json { render :json => @note }
+		  end
+    end
 	end
 
   #Display html for editing note
 	def edit
 		#params[:id]
     id = params[:id]
+    redirected = false
 
     #If this was created before logging in, we need to merge
     if @logged_in and not session[:notes][id].key?:gem_instance_id
       redirect_to edit_note_path swap_gem id
+      redirected = true
       return
     end
     
@@ -122,9 +141,15 @@ class NotesController < ApplicationController
       @note[:body] = eng.render
     end
 		
-    respond_to do |format|
-			format.html	# edit.html.haml
-		end
+  rescue => err
+    handle_err err
+  
+  ensure
+    if not redirected
+      respond_to do |format|
+	  		format.html	# edit.html.haml
+		  end
+    end
 	end
 
   #Update note from provided data
@@ -152,6 +177,10 @@ class NotesController < ApplicationController
       session[:notes][id] = note
     end
 
+  rescue => err
+    handle_err err
+  
+  ensure
     #render
 		respond_to do |format|
 			format.json { render :json => note }
@@ -178,6 +207,10 @@ class NotesController < ApplicationController
       session[:oauth_sess].destroy_gem deleted_item[:gem_instance_id]
     end
 
+  rescue => err
+    handle_err err
+  
+  ensure
 		#render
     respond_to do |format|
 			format.json { render :json => deleted_item }
@@ -186,6 +219,14 @@ class NotesController < ApplicationController
 	end
 
   protected
+  #DRY for handling errors (particularly OAuthSessionError)
+  def handle_err err
+    session.delete "oauth_sess"
+    flash[:notice] = "You have been logged out."
+    puts err.message
+    puts err.backtrace
+  end
+
   def check_logout
     expired = false
     if session.key?:expiration
@@ -220,13 +261,11 @@ class NotesController < ApplicationController
   end
   
   def swap_gem old_id
-    #need to handle edge case of being redirected here from login w/ unprimed session
-    #(in other cases a merge would have already happened)
     _new_note = session[:oauth_sess].create_gem session[:notes][old_id]
     _new_id = _new_note[:gem_instance_id]
-    if _new_note[:url] != note_url(id)
-      _new_note[:url] = note_url id
-      session[:oauth_sess].update_gem _new_note
+    if _new_note[:url] != note_url(_new_id)
+      _new_note[:url] = note_url _new_id
+      _new_note = session[:oauth_sess].update_gem _new_note
     end
     session[:notes][_new_id] = _new_note
     session[:notes].delete(old_id)

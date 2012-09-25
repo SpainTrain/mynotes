@@ -74,6 +74,7 @@
       $scope.note = data
       self.original = angular.copy $scope.note
       return @
+    #TODO: promise.error () ->
     return @
 
   #hack because ng-model doesn't seem to work on hidden inputs

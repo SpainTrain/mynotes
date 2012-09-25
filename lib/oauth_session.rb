@@ -12,6 +12,7 @@ class OauthSession
     }
     if not do_auth data
       #Raise exception
+      raise OAuthSessionError, "Could not complete OAuth flow"
     end
   end
 
@@ -35,6 +36,10 @@ class OauthSession
       new_id = new_gem[:gem_instance_id].split('#')[2]
       curr_gems[new_id] = new_gem
     end
+
+  rescue => e
+    #TODO: revert curr_gems? log exception?
+    return curr_gems
   end
 
   def update_gem note_hash
@@ -124,11 +129,15 @@ class OauthSession
   protected
   #Check expiration and refresh self if invalid, return boolean of success
   def check_validity
-    if @expires_at != nil and @expires_at < Time.new
-      do_refresh
-    else
-      false
+    if @expires_at == nil
+      raise OAuthSessionError, "Expiration not properly initialized."
     end
+    if @expires_at < Time.new
+      if not do_refresh
+        raise OAuthSessionError, "Token could not be refreshed."
+      end
+    end
+    return true
   end
 
   #Perform either initial auth or refresh, return boolean for success
@@ -189,13 +198,13 @@ class OauthSession
     headers = {:Authorization => "Bearer #{@access_token}"}
 
     conn = get_conn url
-    res = conn.get(url, data, headers)
-    #TODO handle "developer over qps" by retrying after delay
-    if res.status == 200
-      return JSON.parse(res.body)
-    else
-      return nil
+    #Try request 3 times
+    for i in 1..3
+      res = conn.get(url, data, headers)
+      if res.status == 200 then return JSON.parse(res.body) end
+      sleep 1
     end
+    raise OAuthSessionError, "GET Failed.  Status: #{res.status}. Body: #{res.body}"
   end
 
   def api_put url_suffix, data_hash
@@ -204,7 +213,13 @@ class OauthSession
     headers = {:Authorization => "Bearer #{@access_token}"}
 
     conn = get_conn url
-    return JSON.parse(conn.put(url, data, headers).body)
+    #Try request 3 times, TODO: use "retry"?
+    for i in 1..3
+      res = conn.put(url, data, headers)
+      if res.status == 200 then return JSON.parse(res.body) end
+      sleep 1
+    end
+    raise OAuthSessionError, "PUT Failed.  Status: #{res.status}. Body: #{res.body}"
   end
 
   def api_post data_hash
@@ -213,7 +228,12 @@ class OauthSession
     headers = {:Authorization => "Bearer #{@access_token}"}
 
     conn = get_conn url
-    return JSON.parse(conn.post(url, data, headers).body)
+    for i in 1..3
+      res = conn.post(url, data, headers)
+      if res.status == 200 then return JSON.parse(res.body) end
+      sleep 1
+    end
+    raise OAuthSessionError, "POST Failed.  Status: #{res.status}. Body: #{res.body}"
   end
 
   def api_delete url_suffix
@@ -221,7 +241,12 @@ class OauthSession
     headers = {:Authorization => "Bearer #{@access_token}"}
 
     conn = get_conn url
-    return JSON.parse(conn.delete(url, {}, headers).body)
+    for i in 1..3
+      res = conn.delete(url, {}, headers)
+      if res.status == 200 then return JSON.parse(res.body) end
+      sleep 1
+    end
+    raise OAuthSessionError, "DELETE Failed.  Status: #{res.status}. Body: #{res.body}"
   end
 
   #get connection for get, put, post, delete (not authorization)
@@ -231,4 +256,7 @@ class OauthSession
       faraday.response :logger
     end
   end
+end
+
+class OAuthSessionError < StandardError
 end
