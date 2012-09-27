@@ -1,4 +1,5 @@
 require 'haml/html'
+require 'securerandom'
 
 class NotesController < ApplicationController
   before_filter :check_logout
@@ -247,13 +248,19 @@ class NotesController < ApplicationController
   end
 
   def check_token
-    if params.key?:code and params[:code] != session[:code] and session.key?:redirect_uri
+    if  params.key?:code and 
+        params[:code] != session[:code] and 
+        session.key?:redirect_uri and 
+        session.key?:state_nonce and 
+        session[:state_nonce] == params[:state]
       session[:code] = params[:code]
       session[:oauth_sess] = OauthSession.new params[:code], session[:redirect_uri]
       session.delete "redirect_uri"
+      session.delete "state_nonce"
     end
     if session.key?:oauth_sess
       @logged_in = true
+      session.delete "state_nonce"
       session[:expiration] = 1.day.from_now
     else
       session[:expiration] = 1.hour.from_now
