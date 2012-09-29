@@ -36,13 +36,13 @@ gem 'jquery-rails'
 # gem 'capistrano'
 
 # To use debugger
-gem 'ruby-debug'
+gem 'ruby-debug', :group => [:development, :test]
+
+gem 'thin', :group => [:development, :test]
 
 #for haml and html2haml
 gem 'haml'
 gem 'hpricot'
-
-gem 'thin'
 
 #gem 'rest-client'
 
@@ -50,4 +50,4 @@ gem 'SystemTimer'
 
 gem 'faraday'
 
-#gem 'closure-sprockets', :git=>'git://github.com/igrigorik/closure-sprockets.git'
+gem 'closure-sprockets', :git=>'git://github.com/egorkhmelev/closure-sprockets.git'

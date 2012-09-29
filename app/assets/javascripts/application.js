@@ -15,6 +15,7 @@
 //= require jquery_ujs
 //= require angular
 //= require bootstrap
+//= require_closure goog_req
 //= require ang-models
 //= require mynotes
 //= require_self
