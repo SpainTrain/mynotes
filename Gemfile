@@ -1,6 +1,6 @@
 source 'https://rubygems.org'
 
-gem 'rails', '3.2.6'
+gem 'rails', '3.2.8'
 
 # Bundle edge Rails instead:
 # gem 'rails', :git => 'git://github.com/rails/rails.git'
@@ -50,4 +50,4 @@ gem 'SystemTimer'
 
 gem 'faraday'
 
-gem 'closure-sprockets', :git=>'git://github.com/egorkhmelev/closure-sprockets.git'
+#gem 'closure-sprockets', :git=>'git://github.com/egorkhmelev/closure-sprockets.git'
