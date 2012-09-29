@@ -58,5 +58,8 @@ module Mynotes
 
     # Version of your assets, change this if you want to expire all your assets
     config.assets.version = '1.0'
+
+    #Use the closure compiler for js
+    config.assets.js_compressor = Closure::Compiler.new
   end
 end

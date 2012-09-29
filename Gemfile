@@ -50,4 +50,6 @@ gem 'SystemTimer'
 
 gem 'faraday'
 
-#gem 'closure-sprockets', :git=>'git://github.com/egorkhmelev/closure-sprockets.git'
+gem 'closure-sprockets', :git=>'git://github.com/egorkhmelev/closure-sprockets.git'
+
+gem 'closure-compiler'

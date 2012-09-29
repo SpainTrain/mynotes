@@ -35,6 +35,6 @@ Mynotes::Application.configure do
   # Expands the lines which load the assets
   config.assets.debug = true
 
-  #Closure Compiler location for closure-sprockets
-  #config.closure.lib = "vendor/assets/closure-library"
+  #disable static assets so compiled assets don't mess with dev
+  #config.serve_static_assets = false
 end

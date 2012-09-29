@@ -31,6 +31,9 @@
   $scope.refreshNotes()
   return @
 
+#inject annotation so that minifiers don't kill the DI
+@NotesCtrl.$inject = ['$scope', '$http']
+
 @EditNote = ($scope, $http) ->
   self = @
 
@@ -86,3 +89,6 @@
 
 
   return @
+
+#inject annotation so that minifiers don't kill the DI
+@EditNote.$inject = ['$scope', '$http']

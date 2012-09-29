@@ -10,12 +10,11 @@
 // WARNING: THE FIRST BLANK LINE MARKS THE END OF WHAT'S TO BE PROCESSED, ANY BLANK LINE SHOULD
 // GO AFTER THE REQUIRES BELOW.
 //
-//= require angular
 //= require jquery
 //= require jquery_ujs
-//= require angular
 //= require bootstrap
-//= require_closure goog_req
 //= require ang-models
+//= require_closure goog_req
 //= require mynotes
 //= require_self
+

@@ -1,3 +1,5 @@
+goog.provide('mynotes.start');
+
 goog.require('goog.dom');
 goog.require('goog.editor.Command');
 goog.require('goog.editor.Field');

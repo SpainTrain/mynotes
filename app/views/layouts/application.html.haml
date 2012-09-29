@@ -76,5 +76,6 @@
           #app-body.span9
             = yield
       
-    -# %script(type="text/javascript" src="/closure/goog/base.js")
+    -# %script(type="text/javascript" src="closure-assembled.js")
+    %script(type="text/javascript" src="//ajax.googleapis.com/ajax/libs/angularjs/1.0.2/angular.js")
     = javascript_include_tag "application"
